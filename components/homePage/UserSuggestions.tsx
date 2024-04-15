@@ -1,4 +1,4 @@
-import Image from 'next/future/image';
+import Image from 'next/image';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import atoms from '../../util/atoms';
@@ -8,9 +8,7 @@ import ProfilePicSVG from '../svgComps/ProfilePicSVG';
 function UserSuggestions() {
   const [userDetails] = useAtom(atoms.userDetails);
   const [spotlightUsers] = useAtom(atoms.spotlightUsers);
-  const [suggestionsLoading, setSuggestionsLoading] = useAtom(
-    atoms.suggestionsLoading
-  );
+  const [suggestionsLoading, setSuggestionsLoading] = useAtom(atoms.suggestionsLoading);
 
   return (
     <div className="mt-6 hidden max-w-[320px] flex-grow lg:block">
@@ -60,61 +58,34 @@ function UserSuggestions() {
             </a>
           </Link>
         </div>
-        <div
-          className={`${suggestionsLoading ? 'fixed opacity-0' : ''}`}
-          onLoad={() => setSuggestionsLoading(false)}
-        >
+        <div className={`${suggestionsLoading ? 'fixed opacity-0' : ''}`}>
           {spotlightUsers.map((spotlightUserDetails) => (
-            <div
-              key={`${spotlightUserDetails.userId}Spotlight`}
-              className="flex items-center justify-between py-2"
-            >
-              <div className="flex items-center gap-2">
-                {spotlightUserDetails.avatarURL?.length !== 0 ? (
-                  <Link href={`/${spotlightUserDetails.username}`}>
-                    <a>
-                      <Image
-                        className="h-8 w-8 cursor-pointer select-none rounded-full object-cover"
-                        src={spotlightUserDetails.avatarURL!}
-                        alt="avatar"
-                        width="32"
-                        height="32"
-                      />
-                    </a>
-                  </Link>
-                ) : (
-                  <Link href={`/${spotlightUserDetails.username}`}>
-                    <a>
-                      <div className="h-8 w-8">
-                        <ProfilePicSVG strokeWidth="2" />
-                      </div>
-                      <picture>
-                        <img
-                          className={suggestionsLoading ? 'h-1 w-1' : 'hidden'}
-                          src="/sun.png"
-                          alt="sun"
-                        />
-                      </picture>
-                    </a>
-                  </Link>
-                )}
+            <div key={spotlightUserDetails?.userId || 'error'} className="flex items-center justify-between py-2">
+              {spotlightUserDetails ? (
                 <div>
                   <Link href={`/${spotlightUserDetails.username}`}>
                     <a>
-                      <p className="cursor-pointer text-xs font-semibold">
-                        {spotlightUserDetails.username}
-                      </p>
+                      <ProfilePicSVG strokeWidth="2" />
                     </a>
                   </Link>
-                  <p className="text-xs text-[#818181]">
-                    Followed by {spotlightUserDetails.followers!.length}{' '}
-                    {spotlightUserDetails.followers!.length === 1
-                      ? 'user'
-                      : 'users'}
-                  </p>
+                  <div>
+                    <Link href={`/${spotlightUserDetails.username}`}>
+                      <a>
+                        <p className="cursor-pointer text-xs font-semibold">
+                          {spotlightUserDetails.username}
+                        </p>
+                      </a>
+                    </Link>
+                    <p className="text-xs text-[#818181]">
+                      Followed by {spotlightUserDetails.followers?.length || 0}{' '}
+                      {spotlightUserDetails.followers && spotlightUserDetails.followers.length === 1 ? 'user' : 'users'}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <Link href={`/${spotlightUserDetails.username}`}>
+              ) : (
+                <div>Error: User details not available</div>
+              )}
+              <Link href={`/${spotlightUserDetails?.username}`}>
                 <a>
                   <p className="cursor-pointer text-xs font-semibold text-[#0095f6]">
                     Profile
@@ -124,7 +95,7 @@ function UserSuggestions() {
             </div>
           ))}
         </div>
-        {suggestionsLoading ? <LoadingSuggestions /> : ''}
+        {suggestionsLoading && <LoadingSuggestions />}
       </div>
     </div>
   );
