@@ -8,7 +8,7 @@ import ProfilePicSVG from '../svgComps/ProfilePicSVG';
 function UserSuggestions() {
   const [userDetails] = useAtom(atoms.userDetails);
   const [spotlightUsers] = useAtom(atoms.spotlightUsers);
-  const [suggestionsLoading, setSuggestionsLoading] = useAtom(atoms.suggestionsLoading);
+  const [suggestionsLoading, ] = useAtom(atoms.suggestionsLoading);
 
   return (
     <div className="mt-6 hidden max-w-[320px] flex-grow lg:block">
